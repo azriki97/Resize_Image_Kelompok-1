@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Resizer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    #imageInput {
+      margin-bottom: 10px;
+    }
+
+    #widthInput, #heightInput, #reduceInput {
+      width: 50px;
+      margin-right: 5px;
+    }
+
+    #output {
+      margin-top: 20px;
+    }
+
+    #resultContainer {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Judul -->
+  <h1>Image Resizer</h1>
+  
+  <!-- Komponen yang menyediakan form yang akan diinputkan -->
+  Place image : <input type="file" id="imageInput" accept="image/*">
+  <br><br>
+  Width : <input type="text" id="widthInput" placeholder="Panjang"> px<br><br>
+  Height : <input type="text" id="heightInput" placeholder="Lebar"> px<br><br>
+  Reduce : <input type="text" id="reduceInput" placeholder="Unsize">(Reduce for 0 - 85)%<br>
+  <br>
+  <button onclick="resizeAndReduce()">Convert</button>
+  <br>
+  <div id="output"></div>
+  <div id="resultContainer"></div>
+
+  <!-- Logic yang dilakukan untuk melakukan proses resize gambar yang diinputkan ke setiap deklarasi komponen/fungsi tertentu -->
+  <script>
+
+    // Perintah untuk melakukan semua hal
+    function resizeAndReduce() {
+      var input = document.getElementById('imageInput');
+      var outputDiv = document.getElementById('output');
+      var resultContainer = document.getElementById('resultContainer');
+      var widthInput = document.getElementById('widthInput');
+      var heightInput = document.getElementById('heightInput');
+      var reduceInput = document.getElementById('reduceInput');
+
+      // Memuat apabila gambar tersedia maka ia melakukan proses pada fungsi yang dibawah
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          var img = new Image();
+
+          img.onload = function() {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+
+            // Menampung inputan ukuran tinggi dan lebar gambar
+            var newWidth = widthInput.value || img.width;
+            var newHeight = heightInput.value || img.height;
+
+            // Fungsi ini mendefinisikan agar persentasi reduksi tidak mencapai 100%
+            var reductionPercentage = parseFloat(reduceInput.value) || 50;
+
+            // Menghitung persentasi reduksi untuk mengubah ukuran
+            newWidth *= (1 - reductionPercentage / 100);
+            newHeight *= (1 - reductionPercentage / 100);
+
+            // Jadilah sebuah ukuran gambar yang baru
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+
+            ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+            // ketika perintah convert dilakukan maka gambar akan ditampilkan
+            var newDataUrl = canvas.toDataURL('image/jpeg', 0.5);
+
+            // Menapilkan sebuah hasil
+            var resultImg = new Image();
+            resultImg.src = newDataUrl;
+
+            resultContainer.innerHTML = '';
+            resultContainer.appendChild(resultImg);
+
+            // Ini digunakan untuk mengunduh gambar
+            var downloadButton = document.createElement('button');
+            downloadButton.innerHTML = 'Unduh Gambar';
+            downloadButton.addEventListener('click', function() {
+              // Trigger/pemicu download
+              var a = document.createElement('a');
+              a.href = newDataUrl;
+              a.download = 'resized_image.jpg';
+              a.click();
+            });
+
+            resultContainer.appendChild(downloadButton);
+          };
+
+          img.src = e.target.result;
+        };
+
+        reader.readAsDataURL(input.files[0]);
+      }
+      
+      // Apabila gambar tidak tersedia maka perlu memasukkan gambar terlebih dahulu
+      else {
+        alert('Please select an image file.');
+      }
+    }
+  </script>
+
+</body>
+</html>
