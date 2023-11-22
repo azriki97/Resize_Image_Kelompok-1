@@ -12,7 +12,7 @@ Source Code : https://github.com/azriki97/Resize_Image_Kelompok-1/blob/main/resz
 
 # How to Run
 1. Buka file resize_image.html
-2. run dengan klik "Go Live"
+2. run dengan klik "Go Live" di pojok kanan bawah
 3. Ketika sudah muncul tampilan maka mulailah memasukkan gambar
 4. Lalu resize lebar, panjang dan resolusi sesuai kebutuhan
 5. Klik "Convert Image" dan Download
